@@ -19,9 +19,47 @@ app.post("/signup",async (req,res)=> //creating API for adding data in database
 }
 });
 
+//Feed API - GET /feed - get all the users from the database
+app.get("/user",async (req,res) => {
 
+    const userEmail = req.body.emailId;
 
+    try{
+       const users = await User.find({emailId: userEmail}); 
+       if(users.length === 0){
+        res.status(404).send("user not found");
+       }else
+       {
+        res.send(users);
+       }
+    } catch(err){
+        res.status(400).send("Something went wrong");
+    }
+   
+});
+//DELete API-delete user by ID
+ app.delete("/user",async (req,res)=>{
+    const userId = req.body.userId;
+    try{
+        const user  = await User.findByIdAndDelete(userId);
+        res.send("User deleted successfully!");
+    }catch(err)
+    {
+        res.status(400).send("Something went wrong");
+    }
 
+ });
+//UPDATE the data of the user
+app.patch("/user",async (req,res)=>{
+    const userId = req.body.userId;
+    const data = req.body;
+    try{
+        await User.findByIdAndUpdate({ _id: userId }, data);
+        res.send("Data Updated Successfully");
+    } catch (err){
+      res.status(400).send("Something went wrong ");
+    }
+});
 connectdb()
 .then(()=>{
     console.log("Database connected succesfully");
