@@ -3,20 +3,20 @@ const connectdb = require("./config/database");
 const app = express();
 const User = require('./models/user');
 
-//creating API for adding data in database 
-app.post("/signup",async (req,res)=>{
+app.use(express.json());//using middlewarres to convert json object to JS object
+
+app.post("/signup",async (req,res)=> //creating API for adding data in database
+    { 
 
     // creating instance of the user model
-    const user = new User({
-        firstName: "Sulav",
-        lastName: "Singhal",
-        emailId: "sulavsinghal01@gmail.com",
-        password: "123",
-        age: 21,
-        gender: "Male"
-    });
+    const user = new User(req.body);  
+
+    try{
     await user.save();
-    res.send("User added sucessfully") // to save the data in database
+    res.send("User added sucessfully"); // to save the data in database
+}catch(err){
+    res.status(400).send("Error saving the user:" + err.message);
+}
 });
 
 
