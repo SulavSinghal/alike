@@ -1,6 +1,6 @@
 // creating schemas using mongoose
 const mongoose = require('mongoose');
-
+const validator = require('validator'); // validation package
 const userSchema = new mongoose.Schema({
     firstName: {
         type: String,
@@ -19,11 +19,20 @@ const userSchema = new mongoose.Schema({
         lowercase: true,
         required: true,
         unique: true,
+        validate(value){ //validation at database level/schema level
+            if(!validator.isEmail(value)){
+                throw new Error("Invalid Email Address" + value);
+            }
+        }
     },
     password: {
         type: String,
         required: true,
-        minLength: 8,
+        validate(value){ //validation at database level
+            if(!validator.isStrongPassword(value)){
+                throw new Error("Weak password!!It should have One UpperCase,min length,special characters." + value);
+            }
+        }
     },
     age: {
         type: Number,
@@ -40,6 +49,11 @@ const userSchema = new mongoose.Schema({
     photoUrl: {
         type: String,
         default: "https://t4.ftcdn.net/jpg/02/44/43/69/240_F_244436923_vkMe10KKKiw5bjhZeRDT05moxWcPpdmb.jpg",
+        validate(value){ //validation at database level
+            if(!validator.isURL(value)){
+                throw new Error("Invalid photo Url" + value);
+            }
+        }
     },
     about: {
         type: String,
