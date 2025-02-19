@@ -50,11 +50,24 @@ app.get("/user",async (req,res) => {
  });
 //UPDATE the data of the user
 app.patch("/user",async (req,res)=>{
-    const userId = req.body.userId;
+    const userId = req.params?.userId; // we need to pass the userid in the API call to use params
     const data = req.body;
     
+
     try{
-        await User.findByIdAndUpdate({ _id: userId }, data, {
+        //VAlidating API calls
+        const ALLOWED_UPDATES = ["userId","photoUrl","about","gender","age","skills"];
+        const isUpdateAllowed = Object.keys(data).every((k) =>
+        ALLOWED_UPDATES.includes(k));
+        if(!isUpdateAllowed)
+        {
+            throw new Error("Update not allowed!");
+        }
+        if(data?.skills.length>20)
+        {
+            throw new Error("Not allowed more than 20 skills")
+        }
+        const user = await User.findByIdAndUpdate({ _id: userId }, data, {
             //to make sure that validation works on patch
             returnDocument: "after",
             runValidators : true,
