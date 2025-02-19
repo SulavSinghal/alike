@@ -18,7 +18,6 @@ app.post("/signup",async (req,res)=> //creating API for adding data in database
     res.status(400).send("Error saving the user:" + err.message);
 }
 });
-
 //Feed API - GET /feed - get all the users from the database
 app.get("/user",async (req,res) => {
 
@@ -53,11 +52,16 @@ app.get("/user",async (req,res) => {
 app.patch("/user",async (req,res)=>{
     const userId = req.body.userId;
     const data = req.body;
+    
     try{
-        await User.findByIdAndUpdate({ _id: userId }, data);
+        await User.findByIdAndUpdate({ _id: userId }, data, {
+            //to make sure that validation works on patch
+            returnDocument: "after",
+            runValidators : true,
+        });
         res.send("Data Updated Successfully");
     } catch (err){
-      res.status(400).send("Something went wrong ");
+      res.status(400).send("UPDATE FAILED" + err.message);
     }
 });
 connectdb()
