@@ -2,22 +2,52 @@ const express = require("express");
 const connectdb = require("./config/database");
 const app = express();
 const User = require('./models/user');
+const {validateSignUpData} = require("./utils/validation");
+const bcrypt = require("bcrypt");
 
 app.use(express.json());//using middlewarres to convert json object to JS object
 
-app.post("/signup",async (req,res)=> //creating API for adding data in database
-    { 
+app.post("/signup",async (req,res)=>{//creating API for adding data in database
+   
+
+try{  
+    //validation the data
+        validateSignUpData(req);
+
+        const { firstName, lastName, emailId, password } = req.body;// to get password
+
+    //encrypt the password
+        const passwordHash = await bcrypt.hash(password,10);
 
     // creating instance of the user model
-    const user = new User(req.body);  
+        const user = new User({
+            firstName, lastName,emailId,
+            password: passwordHash,
+    });  
 
-    try{
-    await user.save();
-    res.send("User added sucessfully"); // to save the data in database
-}catch(err){
-    res.status(400).send("Error saving the user:" + err.message);
-}
+        await user.save();
+        res.send("User added sucessfully"); // to save the data in database
+    }catch(err){
+        res.status(400).send("ERROR :" + err.message);
+    }
 });
+
+app.post("/login",async (req,res)=>{
+    try{
+
+        const { emailId, password } = req.body;
+        
+
+
+
+    }catch(err){
+        res.status(400).send("ERROR :" + err.message);
+    }
+
+});
+
+
+
 //Feed API - GET /feed - get all the users from the database
 app.get("/user",async (req,res) => {
 
@@ -36,6 +66,8 @@ app.get("/user",async (req,res) => {
     }
    
 });
+
+
 //DELete API-delete user by ID
  app.delete("/user",async (req,res)=>{
     const userId = req.body.userId;
@@ -48,9 +80,11 @@ app.get("/user",async (req,res) => {
     }
 
  });
+
+
 //UPDATE the data of the user
 app.patch("/user",async (req,res)=>{
-    const userId = req.params?.userId; // we need to pass the userid in the API call to use params
+    const userId = req.params?.userId; // we need to pass the userid in the API call to use params 
     const data = req.body;
     
 
@@ -77,6 +111,8 @@ app.patch("/user",async (req,res)=>{
       res.status(400).send("UPDATE FAILED" + err.message);
     }
 });
+
+
 connectdb()
 .then(()=>{
     console.log("Database connected succesfully");
