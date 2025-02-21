@@ -5,7 +5,12 @@ const User = require('./models/user');
 const {validateSignUpData} = require("./utils/validation");
 const bcrypt = require("bcrypt");
 const validator = require("validator");
-app.use(express.json());//using middlewarres to convert json object to JS object
+const cookieparser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
+
+//using middlewarres to convert json object to JS object
+app.use(express.json());
+app.use(cookieparser());
 
 app.post("/signup",async (req,res)=>{//creating API for adding data in database
    
@@ -48,9 +53,16 @@ app.post("/login",async (req,res)=>{
             throw new Error ("Invalid Credentials!!!");
         }
         const IsPasswordValid = await bcrypt.compare(password,user.password);
-        if(IsPasswordValid){
-            res.send("Login Successful");
-        }
+        if(IsPasswordValid)
+            {
+                
+                //create a JWT token
+                const token = await jwt.sign({_id: user._id},"SulaV123");
+                console.log(token);
+                // Add the token to cookie and send the respond back
+                res.cookie("token",token);
+                res.send("Login Successful");
+            }
         else
         {
             throw new Error("Invalid Credentials.");
@@ -63,7 +75,37 @@ app.post("/login",async (req,res)=>{
 
 });
 
+app.get("/profile", async (req,res)=>{
 
+    try{
+
+        const cookies = req.cookies;
+
+        const {token} = cookies;
+
+        //validate the token
+
+        if(!token)
+        {
+            throw new Error("Invalid Token");
+        }
+
+        const DecodedMessage = await jwt.verify(token, "SulaV123");
+        const { _id } = DecodedMessage;
+
+        console.log("Logged in user is: " + _id);
+        const user = await User.findById(_id);
+        if(!user)
+        {
+            throw new Error("No User Found");
+        }
+        res.send(user);
+
+    }catch(err)
+    {
+        res.status(400).send("ERROR :" + err.message);
+    }
+});
 
 //Feed API - GET /feed - get all the users from the database
 app.get("/user",async (req,res) => {
