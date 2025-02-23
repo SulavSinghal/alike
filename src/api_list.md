@@ -6,7 +6,7 @@ post /logout
 #profileRouter
 get / profile - viewing the profile
 patch /profile - updating the profile
-patch /profile/password
+patch /profile/password // forget password API
 
 #connectionrequestRouter
 post/request/send/Interested/:userId
