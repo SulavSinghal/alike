@@ -50,7 +50,6 @@ authRouter.post("/login",async (req,res)=>{
             if(isPasswordValid)
                 {
                     const token = await user.getJWT();
-    
                     // Add the token to cookie and send the respond back
                     res.cookie("token",token,{
                         expires: new Date(Date.now() + 8 * 3600000)
@@ -68,6 +67,12 @@ authRouter.post("/login",async (req,res)=>{
         }
     
     });
-    
+
+authRouter.post("/logout",async (req,res)=>{ 
+    res.cookie("token",null,{
+        expires: new Date(Date.now())
+    });
+    res.send("Logout Sucessfull!");
+});
 
 module.exports = authRouter;

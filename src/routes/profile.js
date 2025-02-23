@@ -15,5 +15,5 @@ profileRouter.get("/profile",userAuth,async (req,res)=>{
     }
 });
 
- 
+//  profileRouter.patch("/profile/edit",userAuth,(req,res)=>{})
 module.exports = profileRouter;
