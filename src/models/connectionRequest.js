@@ -22,6 +22,16 @@ const ConnectionRequestSchema = new mongoose.Schema({
 },
  { timestamps: true });
 
+ //Middleware that will be called everytime we call connection request and it will save 
+ ConnectionRequestSchema.pre("save",function(next){
+    const connectionRequest = this;
+    //check if fromUserId is same as toUserId
+    if(connectionRequest.fromUserId.equals(connectionRequest.toUserId)) {
+        throw new Error("Cannot send connection Request to Yourself!");
+    }
+    next();
+ })
+
 const ConnectionRequestModel = new mongoose.model("ConnectionRequest",ConnectionRequestSchema);
 
 module.exports = ConnectionRequestModel;
