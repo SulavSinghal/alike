@@ -37,4 +37,6 @@ profileRouter.get("/profile/view",userAuth,async (req,res)=>{
     res.status(400).send("Error: " + err.message);
  }
 });
+
+// profileRouter.patch("/profile/password",)
 module.exports = profileRouter;
