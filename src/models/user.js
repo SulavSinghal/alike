@@ -8,13 +8,12 @@ const jwt = require('jsonwebtoken');
 const userSchema = new mongoose.Schema({
     firstName: {
         type: String,
-        required: true,
+        required: true, 
         minLength: 4,
         maxLength: 15,
     },
     lastName: {
         type: String,
-        required: true,
         maxLength: 15,
     },
     emailId: {
@@ -22,7 +21,7 @@ const userSchema = new mongoose.Schema({
         trim: true,
         lowercase: true,
         required: true,
-        unique: true,
+        unique: true, //making unique automatically creates indexes 
         validate(value){ //validation at database level/schema level
             if(!validator.isEmail(value)){
                 throw new Error("Invalid Email Address" + value);
@@ -73,6 +72,11 @@ const userSchema = new mongoose.Schema({
     },
 
 },{timestamps : true});//to add created and updated timestamps automatically
+
+
+
+
+
 
 userSchema.methods.getJWT = async function ()
 {

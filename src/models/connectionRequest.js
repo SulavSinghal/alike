@@ -22,6 +22,10 @@ const ConnectionRequestSchema = new mongoose.Schema({
 },
  { timestamps: true });
 
+ //ConnectionRequest.find({fromUserId: 35347434235}) it will execute very fast after adding compund index
+
+ ConnectionRequestSchema.index({fromUserId: 1, toUserId: 1});
+
  //Middleware that will be called everytime we call connection request and it will save 
  ConnectionRequestSchema.pre("save",function(next){
     const connectionRequest = this;
