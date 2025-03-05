@@ -11,8 +11,11 @@ patch /profile/password // forget password API
 #connectionrequestRouter
 post/request/send/Interested/:userId
 post/request/send/ignored/:userid
-POST/request/review/accepted/:reqId
-POST/request/review/rejected/:reqId
+
+combined the above two 
+post/request/send/:status/:userId
+
+POST/request/review/:status/:requestId
 
 #userRouter
 GET /connections
