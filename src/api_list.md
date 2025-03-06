@@ -18,7 +18,7 @@ post/request/send/:status/:userId
 POST/request/review/:status/:requestId
 
 #userRouter
-GET /connections
 GET /requests/received
+GET /connections
 GET /feed - sets you the profiles of other users in interfaces
 
