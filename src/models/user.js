@@ -22,8 +22,10 @@ const userSchema = new mongoose.Schema({
         lowercase: true,
         required: true,
         unique: true, //making unique automatically creates indexes 
-        validate(value){ //validation at database level/schema level
-            if(!validator.isEmail(value)){
+        validate(value)
+        {   //validation at database level/schema level
+            if(!validator.isEmail(value))
+            {
                 throw new Error("Invalid Email Address" + value);
             }
         }
