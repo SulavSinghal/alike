@@ -21,7 +21,7 @@ RequestRouter.post("/request/send/:status/:toUserId",userAuth,async (req,res)=>{
         const toUser = await User.findById(toUserId);
         if(!toUser)
         {
-            return res.status(404).json({message: "User doesnot Exists!"})
+            return res.status(404).json({message: "User does not Exists!"})
         }
 
         //If there is an existing ConnectionRequest
@@ -33,7 +33,7 @@ RequestRouter.post("/request/send/:status/:toUserId",userAuth,async (req,res)=>{
         });
         if(existingConnectionRequest)
         {
-            return res.status(400).json({message: "Connection Request Already Exists"});
+            return res.status(400).send({message: "Connection Request Already Exists"});
         }
         const connectionRequest = new ConnectionRequest({
           fromUserId,
@@ -80,6 +80,7 @@ RequestRouter.post("/request/review/:status/:requestId",userAuth,async(req,res)=
         connectionRequest.status = status;
 
         const data = await connectionRequest.save();
+        res.json({message: "Connection request" + status, data});
 
     }catch(err)
     {
